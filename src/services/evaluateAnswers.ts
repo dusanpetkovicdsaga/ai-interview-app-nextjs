@@ -1,8 +1,5 @@
 import { BASE_API_URL } from "@/constants/config";
-import {
-  TPostEvaluateAnswers,
-  TPostEvaluateAnswersResponse,
-} from "@/shared";
+import { TPostEvaluateAnswers, TPostEvaluateAnswersResponse } from "@/shared";
 import { useMutation } from "@tanstack/react-query";
 
 export function evaluateAnswers(

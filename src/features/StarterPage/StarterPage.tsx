@@ -1,10 +1,11 @@
+"use client";
+
 import * as Yup from "yup";
 import { ButtonPrimary } from "@/components/ButtonPrimary";
 import Checkmark from "@/components/Checkmark";
 import InputField from "@/components/InputField";
 import { PageHeadline } from "@/components/PageHeadline";
 import { SelectField } from "@/components/SelectField";
-import { useFirebase } from "@/providers/FirebaseProvider";
 
 import useInterviewStore, {
   TStore,
@@ -24,7 +25,6 @@ import {
 export function StarterPage() {
   const { push: navigate } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { functions } = useFirebase();
 
   const selectConfig = (state: TStore) => state.config;
   const selectSetConfig = (state: TStoreActions) => state.setConfig;

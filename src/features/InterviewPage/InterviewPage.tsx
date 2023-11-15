@@ -1,3 +1,5 @@
+"use client";
+
 import { ButtonPrimary } from "@/components/ButtonPrimary";
 import InputField from "@/components/InputField";
 import Loader from "@/components/Loader";
