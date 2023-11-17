@@ -9,6 +9,7 @@ import useInterviewStore from "@/store/useInterviewStore";
 import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useEvaluateAnswersMutation } from "@/services/evaluateAnswers";
+import { PageContentBox } from "@/layout/PageContentBox";
 
 export function InterviewPage() {
   const { push } = useRouter();
@@ -16,7 +17,7 @@ export function InterviewPage() {
   const [myAnswer, setMyAnswer] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const {mutateAsync: sendAnswers} = useEvaluateAnswersMutation();
+  const { mutateAsync: sendAnswers } = useEvaluateAnswersMutation();
 
   const getFirstUnansweredQuestion = useInterviewStore(
     (store) => store.getFirstUnansweredQuestion
@@ -75,15 +76,15 @@ export function InterviewPage() {
   };
 
   return (
-    <>
-      <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 animate-slideDown duration-500 ease-out">
-        <Loader isLoading={Boolean(!unansweredQuestion || isLoading)}>
+    <PageContentBox className="">
+      <Loader isLoading={Boolean(!unansweredQuestion || isLoading)}>
+        {unansweredQuestion && (
           <section>
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
               <p className="my-5 text-left text-1  text-gray-600">
                 Question {answered.length + 1} of {config.questionsNum}
               </p>
-              <PageHeadline>{unansweredQuestion!.questionText}</PageHeadline>
+              <PageHeadline>{unansweredQuestion.questionText}</PageHeadline>
               <p className="my-5 text-left text-1  text-gray-600">
                 Answer with as much detail as possible for a better grade.
               </p>
@@ -120,8 +121,8 @@ export function InterviewPage() {
               </form>
             </div>
           </section>
-        </Loader>
-      </div>
-    </>
+        )}
+      </Loader>
+    </PageContentBox>
   );
 }

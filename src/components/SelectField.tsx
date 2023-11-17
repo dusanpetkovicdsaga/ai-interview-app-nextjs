@@ -31,8 +31,9 @@ export const SelectField: React.FC<SelectFieldProps> = ({
           name={name}
           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm sm:leading-5"
           onChange={onChange}
+          defaultValue={""}
         >
-          <option value="" disabled selected>
+          <option value="" disabled>
             {placeholder}
           </option>
           {options.map((option) => (

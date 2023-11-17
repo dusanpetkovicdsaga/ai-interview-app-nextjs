@@ -1,18 +1,22 @@
 "use client";
 
-import {  useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import FailIcon from "@/assets/fail.png";
 import PassIcon from "@/assets/success.png";
 import Loader from "@/components/Loader";
 import { ButtonPrimary } from "@/components/ButtonPrimary";
 import useInterviewStore from "@/store/useInterviewStore";
 import { TScoreEntity } from "@/shared";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { PageContentBox } from "@/layout/PageContentBox";
 
 type TGradeInformation = {
   title: string;
   status: "pass" | "fail" | "not-found";
   icon?: any;
   description: string;
+  certificateId?: string;
 };
 
 type TResultsPageProps = {
@@ -21,16 +25,14 @@ type TResultsPageProps = {
 
 export function ResultsPage({ score }: TResultsPageProps) {
   const resetStore = useInterviewStore((state) => state.reset);
+  const { push } = useRouter();
   const [isLoading] = useState<boolean>(false);
 
   const gradeInformation: TGradeInformation | null = useMemo(() => {
     if (!score) return null;
 
-    console.log(score.questions, "score.questions");
-    const maxScore = score.questions.length * 10;
-    const scoreDescription = `${
-      (score.totalScore / maxScore) * 100
-    } ot of 100%, ${
+    const maxScore = 10;
+    const scoreDescription = `${score.totalScore * 10}% out of 100%, ${
       score.questions.filter((q) => q.score > 7).length
     } questions out of ${score.questions.length} have been answered correctly.`;
 
@@ -40,6 +42,7 @@ export function ResultsPage({ score }: TResultsPageProps) {
         status: "pass",
         icon: PassIcon,
         description: scoreDescription,
+        certificateId: "ABC123", // Replace with actual certificate ID
       };
     } else {
       return {
@@ -51,13 +54,8 @@ export function ResultsPage({ score }: TResultsPageProps) {
     }
   }, [score]);
 
-  console.log(gradeInformation, "gradeInformation");
-  console.log(score, "score");
-
   return (
-    <div
-      className={`flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 animate-slideDown duration-500 ease-out border-solid border-4 border-gray-300`}
-    >
+    <PageContentBox className="border-solid border-4 border-gray-300">
       <Loader isLoading={isLoading}>
         {gradeInformation && (
           <div>
@@ -71,23 +69,46 @@ export function ResultsPage({ score }: TResultsPageProps) {
               {gradeInformation.title}
             </h1>
             <div className="py-3 flex justify-center">
-              <img className="w-auto max-h-64" src={gradeInformation.icon} />
+              <Image
+                alt={gradeInformation.status}
+                className="w-auto max-h-64"
+                src={gradeInformation.icon}
+              />
             </div>
-            <div className="py-3 font-medium text-2xl">
+            <div className="py-3 font-medium text-2xl text-center">
               {gradeInformation.description.split(",").map((block, index) => (
-                <p key={index}>{block}</p>
+                <p
+                  className={`${index === 0 ? "text-3xl pb-3" : ""}`}
+                  key={index}
+                >
+                  {block}
+                </p>
               ))}
             </div>
-            {gradeInformation.status === "fail" && (
+            {gradeInformation.status === "pass" && (
               <div className="py-3">
-                <ButtonPrimary onClick={() => resetStore()}>
-                  Start Over
-                </ButtonPrimary>
+                <p className="text-xl text-center text-green-700">
+                  Your certificate ID: {gradeInformation.certificateId}
+                </p>
+              </div>
+            )}
+            {gradeInformation.status === "fail" && (
+              <div className="pt-10 flex justify-center">
+                <div className="w-48 max-w-full">
+                  <ButtonPrimary
+                    onClick={() => {
+                      resetStore();
+                      push("/");
+                    }}
+                  >
+                    Start Over
+                  </ButtonPrimary>
+                </div>
               </div>
             )}
           </div>
         )}
       </Loader>
-    </div>
+    </PageContentBox>
   );
 }

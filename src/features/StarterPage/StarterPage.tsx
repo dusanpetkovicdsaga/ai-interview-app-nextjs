@@ -21,6 +21,7 @@ import {
   experienceLevels,
   interviewQuestionsCount,
 } from "@/constants";
+import { PageContentBox } from "@/layout/PageContentBox";
 
 export function StarterPage() {
   const { push: navigate } = useRouter();
@@ -80,8 +81,7 @@ export function StarterPage() {
   };
 
   return (
-    <>
-      <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 animate-slideDown duration-500 ease-out">
+      <PageContentBox>
         <Loader isLoading={isLoading}>
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <PageHeadline>What position are you applying for?</PageHeadline>
@@ -201,7 +201,6 @@ export function StarterPage() {
             </form>
           </div>
         </Loader>
-      </div>
-    </>
+      </PageContentBox>
   );
 }

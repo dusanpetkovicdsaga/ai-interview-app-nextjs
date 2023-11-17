@@ -15,11 +15,13 @@ export const metadata: Metadata = {
 async function getScore(id: string) {
   const score = await questionsController.callGetResults({ resultId: id });
 
-  return score;
+  return score?.results;
 }
 
 export default async function Results({ params }: { params: { id: string } }) {
   const score = await getScore(params.id);
+
+  console.log(score, "score");
 
   if (!score) return notFound();
 

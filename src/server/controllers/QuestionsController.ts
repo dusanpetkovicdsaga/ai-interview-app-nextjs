@@ -1,4 +1,10 @@
-import { SCHEMA, TGetQuestionsResponse, TPostEvaluateAnswers, TPostEvaluateAnswersResponse, TScoreEntity } from "@/shared";
+import {
+  SCHEMA,
+  TGetQuestionsResponse,
+  TPostEvaluateAnswers,
+  TPostEvaluateAnswersResponse,
+  TScoreEntity,
+} from "@/shared";
 import { generateAnswersPrompt, processAnswers } from "../answers";
 import { findQuestionByValue } from "../queries/findQuestionByQuery";
 import { findResultById } from "../queries/findResultById";
@@ -11,14 +17,14 @@ export class QuestionsController {
     this.db = db;
   }
 
-  async callGetResults(data: any): Promise<TScoreEntity | null> {
+  async callGetResults(data: any): Promise<{ results: TScoreEntity } | null> {
     try {
       if (!data.resultId) throw new Error("No id provided");
 
       const result = await findResultById(this.db, data.resultId);
 
       if (result) {
-        return result as TScoreEntity;
+        return result as { results: TScoreEntity };
       } else {
         throw new Error("invalid id provided");
       }

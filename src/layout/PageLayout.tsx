@@ -3,5 +3,5 @@ export type PageLayoutProps = {
 };
 
 export function PageLayout({ children }: PageLayoutProps) {
-  return <main className="h-full bg-white rounded-md">{children}</main>;
+  return <main className="h-full flex justify-center items-center">{children}</main>;
 }
