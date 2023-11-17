@@ -14,5 +14,5 @@ export async function GET(
     resultId,
   });
 
-  Response.json(response);
+  return Response.json(response);
 }

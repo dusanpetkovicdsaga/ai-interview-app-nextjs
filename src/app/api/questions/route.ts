@@ -5,7 +5,8 @@ import db from "@/server/db";
 const questionsController = makeQuestionsController(db);
 
 export async function POST(request: Request) {
-  const response = await questionsController.callGenerateQuestions(request.body);
+  const res = await request.json()
+  const response = await questionsController.callGenerateQuestions(res);
 
-  Response.json(response);
+  return Response.json(response);
 }

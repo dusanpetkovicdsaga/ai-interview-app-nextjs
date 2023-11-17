@@ -2,7 +2,8 @@ import { questionsController } from "@/server/controllers";
 
 
 export async function POST(request: Request) {
-  const response = await questionsController.callEvaluateAnswers(request.body);
+  const body = await request.json()
+  const response = await questionsController.callEvaluateAnswers(body);
 
-  Response.json(response);
+  return Response.json(response);
 }

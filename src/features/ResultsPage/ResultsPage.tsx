@@ -1,3 +1,5 @@
+"use client";
+
 import {  useMemo, useState } from "react";
 import FailIcon from "@/assets/fail.png";
 import PassIcon from "@/assets/success.png";
