@@ -4,7 +4,7 @@ import {
   interviewQuestionsCount,
   interviewRoles,
 } from "../../constants";
-import { TExperienceLevelKeys, TInterviewRoleKeys } from "config";
+import { TExperienceLevelKeys, TInterviewRoleKeys } from "@/shared";
 
 export const questionsQuerySchema = Yup.object().shape({
   role: Yup.string<TInterviewRoleKeys>()
