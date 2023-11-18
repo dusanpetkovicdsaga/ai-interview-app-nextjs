@@ -22,6 +22,7 @@ export const Timer = forwardRef<
     }
 
     return () => clearTimeout(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [time]);
 
   useImperativeHandle(ref, () => ({
@@ -34,3 +35,5 @@ export const Timer = forwardRef<
     )}:${time % 60}`}</div>
   );
 });
+
+Timer.displayName = "Timer";
