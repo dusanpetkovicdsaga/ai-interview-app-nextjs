@@ -20,7 +20,7 @@ type TGradeInformation = {
 };
 
 type TResultsPageProps = {
-  score: TScoreEntity | null;
+  score: (TScoreEntity) | null;
 };
 
 export function ResultsPage({ score }: TResultsPageProps) {
@@ -88,7 +88,7 @@ export function ResultsPage({ score }: TResultsPageProps) {
             {gradeInformation.status === "pass" && (
               <div className="py-3">
                 <p className="text-xl text-center text-green-700">
-                  Your certificate ID: {gradeInformation.certificateId}
+                  Your certificate ID: {score?.certificateId}
                 </p>
               </div>
             )}

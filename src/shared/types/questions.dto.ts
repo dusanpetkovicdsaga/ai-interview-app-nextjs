@@ -1,15 +1,22 @@
 import * as Yup from "yup";
 
 import { questionsQuerySchema } from "../schemas";
+import { Config, User } from "@/store/useInterviewStore";
 
 export type TScoreEntity = {
-  questions: Array<TQuestionEntity & { score: number }>;
+  certificateId: string;
+  user: User;
+  config: Config;
+  questions: Array<TQuestionEntity & { score: number, reason: string }>;
+  answers: Array<TAnswerEntity>;
   totalScore: number;
 };
 
 export type TPostEvaluateAnswers = {
+  user: User;
   questions: Array<TQuestionEntity>;
   answers: Array<TAnswerEntity>;
+  config: Config;
 };
 
 export type TPostEvaluateAnswersResponse = {
@@ -27,7 +34,7 @@ export type TQuestionEntity = {
   id: string;
 };
 
-export type TQuestionEntityWithScore = TQuestionEntity & { score: number };
+export type TQuestionEntityWithScore = TQuestionEntity & { score: number, reason: string };
 
 export type TGetQuestions = {
   questions: Array<TQuestionEntity>;

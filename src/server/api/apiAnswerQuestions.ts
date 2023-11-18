@@ -8,7 +8,7 @@ export async function apiAnswerQuestions(query: string) {
     {
       name: "process_answers",
       description:
-        "Score a list of answers for a tech interview questions for a given role and seniority level.",
+        "Can you score the provided answers for each given question in the provided JSON? The score should range from 0 to 10, with 10 being a correct answer and 0 being an invalid or wrong answer. Also provide reasons for each score in a separate array. Please ensure that the scoring is rigorous.",
       parameters: {
         type: "object",
         properties: {
@@ -24,8 +24,9 @@ export async function apiAnswerQuestions(query: string) {
                   type: "string",
                 },
                 score: { type: "number" },
+                reason: { type: "string" },
               },
-              required: ["questionText", "id", "score"],
+              required: ["questionText", "id", "score", "reason"],
             },
           },
         },

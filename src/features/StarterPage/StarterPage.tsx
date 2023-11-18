@@ -83,7 +83,7 @@ export function StarterPage() {
   return (
       <PageContentBox>
         <Loader isLoading={isLoading}>
-          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+          <div className="sm:mx-auto sm:w-full sm:max-w-lg">
             <PageHeadline>What position are you applying for?</PageHeadline>
           </div>
 

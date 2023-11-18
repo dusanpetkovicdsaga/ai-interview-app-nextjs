@@ -31,6 +31,7 @@ export function InterviewPage() {
   );
 
   const config = useInterviewStore((store) => store.config);
+  const user = useInterviewStore((store) => store.user);
   const setAnswer = useInterviewStore((store) => store.setAnswer);
 
   const handleSendAnswers = async () => {
@@ -40,6 +41,8 @@ export function InterviewPage() {
     const score = await sendAnswers({
       answers: answered,
       questions: questions,
+      config: config,
+      user,
     });
 
     // set results to state

@@ -9,7 +9,7 @@ type AnweredQuestion = {
   timeTaken: number;
 };
 
-type Config = {
+export type Config = {
   role: Nullable<TInterviewRoleKeys>;
   experienceLevel: Nullable<TExperienceLevelKeys>;
   questionsNum: Nullable<number>;
@@ -18,7 +18,7 @@ type Config = {
   shuffle: boolean;
 };
 
-type User = {
+export type User = {
   email: Nullable<string>;
 };
 
