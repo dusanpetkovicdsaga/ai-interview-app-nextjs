@@ -14,6 +14,7 @@ import { generateQuestionsPrompt, sendAndProcessQuestions } from "../questions";
 import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
 import { apiVerifyRecaptcha } from "../api/apiVerifyRecaptcha";
+import { saveSession } from "../queries/saveSession";
 
 export class QuestionsController {
   db: FirebaseFirestore.Firestore;
@@ -51,6 +52,9 @@ export class QuestionsController {
     if (validation.success === false) {
       return { error: "Recaptcha validation failed", key: "recaptcha" };
     }
+
+
+    saveSession(this.db, { answers, questions, config, user });
 
     // genrate a query baseed on the questions and answers arrays, to concatonate the questions and answers into one array of strings to be sent to the model
 
