@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "AI Tech Interview App",
-  description: "Pratice and get evaluated by AI.",
+  description: "Practice and get evaluated by AI.",
 };
 
 export default function RootLayout({
