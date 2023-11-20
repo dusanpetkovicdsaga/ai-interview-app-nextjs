@@ -2,8 +2,8 @@ import { InterviewPage } from "@/features/InterviewPage";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Interview",
-  description: "Interview",
+  title: "Answer Questions",
+  description: "Pratice and get evaluated by AI.",
 };
 
 export default function Interview() {

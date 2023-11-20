@@ -6,6 +6,7 @@ interface SelectFieldProps {
   label: string;
   placeholder?: string;
   options: string[] | { key: string; label: string }[];
+  value?: string; // Add the value prop
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
@@ -15,6 +16,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
   label,
   options,
   placeholder = "Enter value",
+  value, // Add the value prop
   onChange,
 }) => {
   return (
@@ -31,7 +33,8 @@ export const SelectField: React.FC<SelectFieldProps> = ({
           name={name}
           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm sm:leading-5"
           onChange={onChange}
-          defaultValue={""}
+          defaultValue={value || ""} // Set the defaultValue to value prop or empty string
+          value={value} // Add the value prop
         >
           <option value="" disabled>
             {placeholder}

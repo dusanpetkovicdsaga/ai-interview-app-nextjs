@@ -57,7 +57,7 @@ export function InterviewPage() {
       setAnswer(
         unansweredQuestion.id,
         myAnswer,
-        timerRef.current?.getTime() || 0
+        timerRef.current && config.timeLimitPerQuestion ? config.timeLimitPerQuestion * 60 - timerRef.current?.getTime() :  0
       );
 
       setTimeout(() => {
@@ -79,7 +79,7 @@ export function InterviewPage() {
   };
 
   return (
-    <PageContentBox className="">
+    <PageContentBox className="border-blue-400 border-4">
       <Loader isLoading={Boolean(!unansweredQuestion || isLoading)}>
         {unansweredQuestion && (
           <section>
