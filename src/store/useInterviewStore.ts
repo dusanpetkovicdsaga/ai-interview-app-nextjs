@@ -1,4 +1,8 @@
-import { TExperienceLevelKeys, TInterviewRoleKeys, TQuestionEntity } from "@/shared";
+import {
+  TExperienceLevelKeys,
+  TInterviewRoleKeys,
+  TQuestionEntity,
+} from "@/shared";
 import { create } from "zustand";
 
 type Questions = Array<TQuestionEntity>;
@@ -20,6 +24,8 @@ export type Config = {
 
 export type User = {
   email: Nullable<string>;
+  recaptchaToken: Nullable<string>;
+  recaptchaToken_evaluate: Nullable<string>;
 };
 
 type Error = {
@@ -40,7 +46,7 @@ export type TStoreActions = {
   setQuestions: (questions: Questions) => void;
   setAnswer: (questionId: string, answer: string, timeTaken: number) => void;
   setConfig: (config: Partial<Config>) => void;
-  setUser: (user: User) => void;
+  setUser: (user: Partial<User>) => void;
   getFirstUnansweredQuestion: () => Nullable<TQuestionEntity>;
   reset: () => void;
 };
@@ -48,6 +54,8 @@ export type TStoreActions = {
 const initialStoreState = {
   user: {
     email: null,
+    recaptchaToken: null,
+    recaptchaToken_evaluate: null,
   },
   errors: [],
   questions: [],
@@ -84,7 +92,8 @@ const useInterviewStore = create<TStore & TStoreActions>((set, get) => ({
     }),
   setConfig: (config: Partial<Config>) =>
     set((state: TStore) => ({ config: { ...state.config, ...config } })),
-  setUser: (user: User) => set({ ...user, user }),
+  setUser: (user) =>
+    set((state: TStore) => ({ user: { ...state.user, ...user } })),
   getFirstUnansweredQuestion: () => {
     const { questions, answered } = get();
 

@@ -1,5 +1,6 @@
 import {
   SCHEMA,
+  TErrorResponse,
   TGetQuestionsResponse,
   TPostEvaluateAnswers,
   TPostEvaluateAnswersResponse,
@@ -12,6 +13,7 @@ import { saveResults } from "../queries/saveResults";
 import { generateQuestionsPrompt, sendAndProcessQuestions } from "../questions";
 import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
+import { apiVerifyRecaptcha } from "../api/apiVerifyRecaptcha";
 
 export class QuestionsController {
   db: FirebaseFirestore.Firestore;
@@ -19,9 +21,7 @@ export class QuestionsController {
     this.db = db;
   }
 
-  async callGetResults(
-    data: any
-  ): Promise<{ results: TScoreEntity } | null> {
+  async callGetResults(data: any): Promise<{ results: TScoreEntity } | null> {
     try {
       if (!data.resultId) throw new Error("No id provided");
 
@@ -29,7 +29,7 @@ export class QuestionsController {
 
       if (result) {
         result.id = data.resultId;
-        return result as { results: TScoreEntity  };
+        return result as { results: TScoreEntity };
       } else {
         throw new Error("invalid id provided");
       }
@@ -39,11 +39,18 @@ export class QuestionsController {
     }
   }
 
-  async callEvaluateAnswers(data: any): Promise<TPostEvaluateAnswersResponse> {
-    const { answers, questions, config, user } =
+  async callEvaluateAnswers(
+    data: any
+  ): Promise<TPostEvaluateAnswersResponse | TErrorResponse> {
+    const { answers, questions, config, user, recaptchaToken } =
       (await SCHEMA.evaluateAnswersSchema.validate(
         data
       )) as TPostEvaluateAnswers;
+
+    const validation = await apiVerifyRecaptcha(recaptchaToken);
+    if (validation.success === false) {
+      return { error: "Recaptcha validation failed", key: "recaptcha" };
+    }
 
     // genrate a query baseed on the questions and answers arrays, to concatonate the questions and answers into one array of strings to be sent to the model
 
@@ -88,9 +95,16 @@ export class QuestionsController {
     return saveResults(this.db, score);
   }
 
-  async callGenerateQuestions(data: any): Promise<TGetQuestionsResponse> {
-    const { role, experienceLevel, questionsNum } =
+  async callGenerateQuestions(
+    data: any
+  ): Promise<TGetQuestionsResponse | TErrorResponse> {
+    const { role, experienceLevel, questionsNum, recaptchaToken } =
       await SCHEMA.questionsQuerySchema.validate(data);
+
+    const validation = await apiVerifyRecaptcha(recaptchaToken);
+    if (validation.success === false) {
+      return { error: "Recaptcha validation failed", key: "recaptcha" };
+    }
 
     const question = generateQuestionsPrompt(
       questionsNum.toString(),

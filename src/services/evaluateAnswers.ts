@@ -1,5 +1,6 @@
 import { BASE_API_URL } from "@/constants/config";
 import { TPostEvaluateAnswers, TPostEvaluateAnswersResponse } from "@/shared";
+import useInterviewStore from "@/store/useInterviewStore";
 import { useMutation } from "@tanstack/react-query";
 
 export function evaluateAnswers(
@@ -18,11 +19,16 @@ export function evaluateAnswers(
 }
 
 export function useEvaluateAnswersMutation() {
+  const token = useInterviewStore((state) => state.user.recaptchaToken_evaluate);
+
   return useMutation<
     TPostEvaluateAnswersResponse,
     unknown,
     TPostEvaluateAnswers
   >({
-    mutationFn: (data) => evaluateAnswers(data),
+    mutationFn: (data) => evaluateAnswers({
+      ...data,
+      recaptchaToken: token!
+    }),
   });
 }

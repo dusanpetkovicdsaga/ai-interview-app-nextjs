@@ -6,10 +6,14 @@ import Loader from "@/components/Loader";
 import { PageHeadline } from "@/components/PageHeadline";
 import { Timer, TimerRef } from "@/components/Timer";
 import useInterviewStore from "@/store/useInterviewStore";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useEvaluateAnswersMutation } from "@/services/evaluateAnswers";
 import { PageContentBox } from "@/layout/PageContentBox";
+import ReCAPTCHA from "react-google-recaptcha";
+import React from "react";
+
+const MemoizedReCAPTCHA = React.memo(ReCAPTCHA);
 
 export function InterviewPage() {
   const { push } = useRouter();
@@ -32,13 +36,31 @@ export function InterviewPage() {
 
   const config = useInterviewStore((store) => store.config);
   const user = useInterviewStore((store) => store.user);
+  const setUser = useInterviewStore((store) => store.setUser);
   const setAnswer = useInterviewStore((store) => store.setAnswer);
+
+  
+  const recaptchaToken = user.recaptchaToken_evaluate;
+  const setRecaptchaToken = (token: string) => {
+    setUser({ recaptchaToken_evaluate: token });
+  };
+
+  const handleRecaptchaChange = useCallback(
+    (value: string | null) => {
+      if (!value) return;
+
+      setRecaptchaToken(value);
+    },
+    [setRecaptchaToken]
+  );
+
 
   const handleSendAnswers = async () => {
     // if no more questions, submit
     const { questions, answered } = useInterviewStore.getState();
 
     const score = await sendAnswers({
+      recaptchaToken: user.recaptchaToken_evaluate!,
       answers: answered,
       questions: questions,
       config: config,
@@ -57,7 +79,9 @@ export function InterviewPage() {
       setAnswer(
         unansweredQuestion.id,
         myAnswer,
-        timerRef.current && config.timeLimitPerQuestion ? config.timeLimitPerQuestion * 60 - timerRef.current?.getTime() :  0
+        timerRef.current && config.timeLimitPerQuestion
+          ? config.timeLimitPerQuestion * 60 - timerRef.current?.getTime()
+          : 0
       );
 
       setTimeout(() => {
@@ -77,6 +101,8 @@ export function InterviewPage() {
       }
     }
   };
+
+  const isLastQuestion = answered.length + 1 === config.questionsNum;
 
   return (
     <PageContentBox className="border-blue-400 border-4">
@@ -118,9 +144,18 @@ export function InterviewPage() {
                   />
                 </div>
 
-                <div>
-                  <ButtonPrimary>Submit</ButtonPrimary>
+                <div className="mb-3">
+                  <ButtonPrimary disabled={isLastQuestion && !recaptchaToken}>
+                    Submit
+                  </ButtonPrimary>
+                 
                 </div>
+                {isLastQuestion && !recaptchaToken && (
+                    <MemoizedReCAPTCHA
+                      sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                      onChange={handleRecaptchaChange}
+                    />
+                  )}
               </form>
             </div>
           </section>

@@ -17,6 +17,7 @@ export type TPostEvaluateAnswers = {
   questions: Array<TQuestionEntity>;
   answers: Array<TAnswerEntity>;
   config: Config;
+  recaptchaToken: string;
 };
 
 export type TPostEvaluateAnswersResponse = {
@@ -40,6 +41,11 @@ export type TGetQuestions = {
   questions: Array<TQuestionEntity>;
   query: string;
 };
+
+export type TErrorResponse = {
+  error: string;
+  key: string;
+}
 
 export type TGetQuestionsResponse = Array<TQuestionEntity>;
 

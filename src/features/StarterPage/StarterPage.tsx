@@ -14,7 +14,7 @@ import useInterviewStore, {
 import { useRouter } from "next/navigation";
 import { SCHEMA, TExperienceLevelKeys, TInterviewRoleKeys } from "@/shared";
 import Loader from "@/components/Loader";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useGenerateQuestionsMutation } from "@/services/generateQuestions";
 import {
   interviewRoles,
@@ -24,6 +24,10 @@ import {
 import { PageContentBox } from "@/layout/PageContentBox";
 import Icon from "@/assets/ai.png";
 import Image from "next/image";
+import ReCAPTCHA from "react-google-recaptcha";
+import React from "react";
+
+const MemoizedReCAPTCHA = React.memo(ReCAPTCHA);
 
 export function StarterPage() {
   const { push: navigate } = useRouter();
@@ -43,21 +47,37 @@ export function StarterPage() {
   const config = useInterviewStore(selectConfig);
   const user = useInterviewStore(selectUserData);
 
+  const recaptchaToken = user.recaptchaToken;
+  const setRecaptchaToken = (token: string) => {
+    setUser({ recaptchaToken: token });
+  };
+
   const setErrors = useInterviewStore(selectErrors);
 
   const { mutateAsync: generateQuestions } = useGenerateQuestionsMutation();
 
+  const handleRecaptchaChange = useCallback(
+    (value: string | null) => {
+      if (!value) return;
+
+      setRecaptchaToken(value);
+    },
+    [setRecaptchaToken]
+  );
+
   const handleGenerateQuestions = async () => {
     try {
+      if (!recaptchaToken) throw new Error("Please complete the recaptcha");
       setIsLoading(true);
       const { role, experienceLevel, questionsNum } =
         await SCHEMA.questionsQuerySchema
           .concat(
             Yup.object().shape({ sendResultsToEmail: Yup.bool().required() })
           )
-          .validate(config);
+          .validate({ ...config, recaptchaToken });
 
       const questions = await generateQuestions({
+        recaptchaToken: recaptchaToken,
         role: role,
         experienceLevel: experienceLevel,
         questionsNum: questionsNum,
@@ -88,7 +108,11 @@ export function StarterPage() {
     <PageContentBox className=" border-blue-400 border-4 ">
       <Loader isLoading={isLoading}>
         <div className="flex justify-center">
-          <Image className="max-w-[100%] w-20" src={Icon} alt="AI Interviewer" />
+          <Image
+            className="max-w-[100%] w-20"
+            src={Icon}
+            alt="AI Interviewer"
+          />
         </div>
         <div className="sm:mx-auto sm:w-full sm:max-w-lg">
           <PageHeadline>What position are you applying for?</PageHeadline>
@@ -205,9 +229,17 @@ export function StarterPage() {
               </Checkmark>
             </div>
 
-            <div>
-              <ButtonPrimary>Start The Interview</ButtonPrimary>
+            <div className="mb-3">
+              <ButtonPrimary disabled={!recaptchaToken}>
+                Start The Interview
+              </ButtonPrimary>
             </div>
+            {!recaptchaToken && (
+              <MemoizedReCAPTCHA
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                onChange={handleRecaptchaChange}
+              />
+            )}
           </form>
         </div>
       </Loader>

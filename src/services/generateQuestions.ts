@@ -1,5 +1,6 @@
 import { BASE_API_URL } from "@/constants/config";
 import { TGetQuestionsResponse, TQuestionsQuery } from "@/shared";
+import useInterviewStore from "@/store/useInterviewStore";
 import { useMutation } from "@tanstack/react-query";
 
 export function generateQuestions(
@@ -18,11 +19,15 @@ export function generateQuestions(
 }
 
 export function useGenerateQuestionsMutation() {
+  const token = useInterviewStore((state) => state.user.recaptchaToken);
   return useMutation<
     TGetQuestionsResponse,
     unknown,
     TQuestionsQuery
   >({
-    mutationFn: (data) => generateQuestions(data),
+    mutationFn: (data) => generateQuestions({
+      ...data,
+      recaptchaToken: token!,
+    }),
   });
 }

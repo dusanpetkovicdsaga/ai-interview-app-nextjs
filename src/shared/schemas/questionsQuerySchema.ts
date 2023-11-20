@@ -7,6 +7,7 @@ import {
 import { TExperienceLevelKeys, TInterviewRoleKeys } from "@/shared";
 
 export const questionsQuerySchema = Yup.object().shape({
+  recaptchaToken: Yup.string().required(),
   role: Yup.string<TInterviewRoleKeys>()
     .oneOf(Object.keys(interviewRoles) as TInterviewRoleKeys[])
     .required(),
