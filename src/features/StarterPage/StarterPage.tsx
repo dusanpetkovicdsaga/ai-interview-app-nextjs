@@ -93,9 +93,7 @@ export function StarterPage() {
       console.log(err);
       setErrors([
         {
-          message: err
-            ? err.toString()
-            : "Something went wrong. Please try again later.",
+          message: "Something went wrong. Please try again later.",
           type: "error",
         },
       ]);
