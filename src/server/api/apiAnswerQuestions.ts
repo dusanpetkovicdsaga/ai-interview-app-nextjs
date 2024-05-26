@@ -7,8 +7,9 @@ export async function apiAnswerQuestions(query: string) {
   const functions = [
     {
       name: "process_answers",
-      description:
-        "Can you score the provided answers for each given question in the provided JSON? The score should range from 0 to 10, with 10 being a correct answer and 0 being an invalid or wrong answer. Also provide reasons for each score in a separate array. Please ensure that the scoring is rigorous.",
+      description: `You will be provideded with json object of questions and answers, |
+        Task 1: score the answers. The score should range from 0 to 10, with 10 being very good and 0 being very bad. 
+        Task 2: provide reasons for each score in a separate array.`,
       parameters: {
         type: "object",
         properties: {
@@ -36,13 +37,29 @@ export async function apiAnswerQuestions(query: string) {
   ];
 
   const completion = await openai.chat.completions.create({
-    messages: [{ role: "system", content: query }],
+    messages: [
+      {
+        role: "system",
+        content: `You will be provideded with json object of questions and answers,
+      Task 1: score the answers. The score should range from 0 to 10, with 10 being very good and 0 being very bad. 
+      Task 2: provide reasons for each score in a separate array.`,
+      },
+      {
+        role: "user",
+        content: query,
+      },
+    ],
     model: "gpt-3.5-turbo",
     functions,
     function_call: "auto",
+    temperature: 0.5,
+    max_tokens: 4096,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
   });
 
-  console.info(completion.choices, { structuredData: true });
+  console.log(completion.choices, { structuredData: true });
   const responseMessage = completion.choices[0].message;
 
   return {

@@ -39,7 +39,6 @@ export function InterviewPage() {
   const setUser = useInterviewStore((store) => store.setUser);
   const setAnswer = useInterviewStore((store) => store.setAnswer);
 
-  
   const recaptchaToken = user.recaptchaToken_evaluate;
   const setRecaptchaToken = (token: string) => {
     setUser({ recaptchaToken_evaluate: token });
@@ -53,7 +52,6 @@ export function InterviewPage() {
     },
     [setRecaptchaToken]
   );
-
 
   const handleSendAnswers = async () => {
     // if no more questions, submit
@@ -146,16 +144,15 @@ export function InterviewPage() {
 
                 <div className="mb-3">
                   <ButtonPrimary disabled={isLastQuestion && !recaptchaToken}>
-                    Submit
+                    {isLastQuestion ? "Submit" : "Next"}
                   </ButtonPrimary>
-                 
                 </div>
                 {isLastQuestion && !recaptchaToken && (
-                    <MemoizedReCAPTCHA
-                      sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-                      onChange={handleRecaptchaChange}
-                    />
-                  )}
+                  <MemoizedReCAPTCHA
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                    onChange={handleRecaptchaChange}
+                  />
+                )}
               </form>
             </div>
           </section>

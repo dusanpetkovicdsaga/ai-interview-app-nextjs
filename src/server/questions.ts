@@ -6,7 +6,7 @@ export const generateQuestionsPrompt = (
   role: string,
   experienceLevel: string
 ) => {
-  return `Can you generate ${questionsNum} interview questions for the role of ${role} with the experience level of ${experienceLevel}?`;
+  return `Generate ${questionsNum} technical interview questions for the role of ${role} with the experience level of ${experienceLevel}.`;
 };
 
 export async function sendAndProcessQuestions(
@@ -25,12 +25,8 @@ export async function sendAndProcessQuestions(
 
     const functionToCall = availableFunctions[functionName];
     const functionArgs = JSON.parse(function_call.arguments);
-    
-    await functionToCall(
-      db,
-      functionArgs.questions,
-      question.toString()
-    );
+
+    await functionToCall(db, functionArgs.questions, question.toString());
 
     return { questions: functionArgs.questions };
   }
