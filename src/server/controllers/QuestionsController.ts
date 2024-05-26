@@ -53,13 +53,14 @@ export class QuestionsController {
       return { error: "Recaptcha validation failed", key: "recaptcha" };
     }
 
-
     saveSession(this.db, { answers, questions, config, user });
 
     // genrate a query baseed on the questions and answers arrays, to concatonate the questions and answers into one array of strings to be sent to the model
 
     const query = generateAnswersPrompt(
-      JSON.stringify({ answers, questions }),
+      JSON.stringify(
+        questions.map((q, index) => ({ ...q, answer: answers[index].answer }))
+      ),
       config
     );
 
