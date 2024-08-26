@@ -30,4 +30,4 @@ export const interviewRoles = {
     PRINCIPAL: "Principal",
   } as const;
   
-  export const interviewQuestionsCount = [5, 10, 15, 20] as const;
+  export const interviewQuestionsCount = [5, 10] as const;

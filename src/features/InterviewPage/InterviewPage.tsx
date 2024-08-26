@@ -102,25 +102,38 @@ export function InterviewPage() {
 
   const isLastQuestion = answered.length + 1 === config.questionsNum;
 
+  const [animate, setAnimate] = useState(true);
+
+  // Toggle animation on button click for demonstration
+  const handleToggleAnimation = () => {
+    setAnimate(!animate);
+  };
+
   return (
-    <PageContentBox className="border-blue-400 border-4">
+    <PageContentBox className="  w-screen h-screen">
       <Loader isLoading={Boolean(!unansweredQuestion || isLoading)}>
         {unansweredQuestion && (
           <section>
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+              <div className="flex justify-between">
               <p className="my-5 text-left text-1  text-gray-600">
                 Question {answered.length + 1} of {config.questionsNum}
               </p>
-              <PageHeadline>{unansweredQuestion.questionText}</PageHeadline>
-              <p className="my-5 text-left text-1  text-gray-600">
-                Answer with as much detail as possible for a better grade.
-              </p>
+
               <Timer
                 key={unansweredQuestion?.id}
                 ref={timerRef}
                 timeMin={config.timeLimitPerQuestion!}
                 onExpired={handleSubmitAnswer}
               />
+              </div>
+             
+              
+              <PageHeadline animate={animate}>{unansweredQuestion.questionText}</PageHeadline>
+              <p className="my-5 text-left text-1  text-gray-600">
+                Answer with as much detail as possible for a better grade.
+              </p>
+             
             </div>
 
             <div className=" bg-white mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -143,7 +156,7 @@ export function InterviewPage() {
                 </div>
 
                 <div className="mb-3">
-                  <ButtonPrimary disabled={isLastQuestion && !recaptchaToken}>
+                  <ButtonPrimary disabled={isLastQuestion && !recaptchaToken}   onClick={handleToggleAnimation}>
                     {isLastQuestion ? "Submit" : "Next"}
                   </ButtonPrimary>
                 </div>
