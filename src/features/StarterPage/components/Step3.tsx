@@ -29,7 +29,7 @@ import React from "react";
 
 const MemoizedReCAPTCHA = React.memo(ReCAPTCHA);
 
-export function StarterPage() {
+export function Step3({ onSubmit }: { onSubmit: () => void }) {
   const { push: navigate } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -65,97 +65,74 @@ export function StarterPage() {
     [setRecaptchaToken]
   );
 
-  const handleGenerateQuestions = async () => {
-    try {
-      if (!recaptchaToken) throw new Error("Please complete the recaptcha");
-      setIsLoading(true);
-      const { role, experienceLevel, questionsNum } =
-        await SCHEMA.questionsQuerySchema
-          .concat(
-            Yup.object().shape({ sendResultsToEmail: Yup.bool().required() })
-          )
-          .validate({ ...config, recaptchaToken });
-
-      const questions = await generateQuestions({
-        recaptchaToken: recaptchaToken,
-        role: role,
-        experienceLevel: experienceLevel,
-        questionsNum: questionsNum,
-      });
-
-      console.log(questions);
-
-      if (questions) setQuestions(questions);
-
-      // transition to the next page (INREVIEW PAGE)
-      navigate("/qa");
-    } catch (err) {
-      console.log(err);
-      setErrors([
-        {
-          message: "Something went wrong. Please try again later.",
-          type: "error",
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
-    <PageContentBox className=" border-blue-400 border-4 ">
-      <Loader isLoading={isLoading}>
-        <div className=" bg-white mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form
-            className="space-y-6"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleGenerateQuestions();
+
+    <div className=" bg-white mt-10  sm:mx-auto sm:w-full sm:max-w-sm">
+      <form
+        className="space-y-6"
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit()
+        }}
+      >
+
+        <div>
+          <div className="flex justify-center">
+            <Image
+              className="max-w-[100%] w-20"
+              src={Icon}
+              alt="AI Interviewer"
+            />
+          </div>
+          <div className="sm:mx-auto sm:w-full sm:max-w-lg mb-10">
+            <PageHeadline>Who is taking the interview?</PageHeadline>
+          </div>
+
+          <InputField
+            id="email"
+            type="email"
+            required
+            label="Email address"
+            onChange={(e) => setUser({ email: e.target.value })}
+            value={user.email || ""}
+          />
+        </div>
+
+        <div>
+          <Checkmark
+            id="sendResultsToEmail"
+            name="sendResultsToEmail"
+            checked={config.sendResultsToEmail}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value) {
+                setConfig({
+                  sendResultsToEmail: !config.sendResultsToEmail,
+                });
+              }
             }}
           >
-            <div>
-              <InputField
-                id="email"
-                type="email"
-                required
-                label="Email address"
-                onChange={(e) => setUser({ email: e.target.value })}
-                value={user.email || ""}
-              />
-            </div>
-
-            <div>
-              <Checkmark
-                id="sendResultsToEmail"
-                name="sendResultsToEmail"
-                checked={config.sendResultsToEmail}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value) {
-                    setConfig({
-                      sendResultsToEmail: !config.sendResultsToEmail,
-                    });
-                  }
-                }}
-              >
-                Send results to my email address after completion.
-              </Checkmark>
-            </div>
-
-            <div className="mb-3">
-              <ButtonPrimary disabled={!recaptchaToken}>
-                Start The Interview
-              </ButtonPrimary>
-            </div>
-            {!recaptchaToken && (
-              <MemoizedReCAPTCHA
-                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-                onChange={handleRecaptchaChange}
-              />
-            )}
-          </form>
+            Send results to my email address after completion.
+          </Checkmark>
         </div>
-      </Loader>
-    </PageContentBox>
+
+        <div className="mb-3">
+          <ButtonPrimary disabled={!recaptchaToken}>
+            Start The Interview
+          </ButtonPrimary>
+        </div>
+        {!recaptchaToken && (
+          <MemoizedReCAPTCHA
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+            onChange={handleRecaptchaChange}
+
+          />
+        )}
+
+
+      </form>
+    </div>
+
   );
 }

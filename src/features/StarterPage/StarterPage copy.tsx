@@ -29,7 +29,7 @@ import React from "react";
 
 const MemoizedReCAPTCHA = React.memo(ReCAPTCHA);
 
-export function Step2({onSubmit}:{onSubmit:() => void}) {
+export function StarterPage() {
   const { push: navigate } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -103,33 +103,81 @@ export function Step2({onSubmit}:{onSubmit:() => void}) {
   };
 
   return (
-    
-     <>
-       <div className="flex justify-center">
+    <PageContentBox className=" border-blue-400 border-4 ">
+      <Loader isLoading={isLoading}>
+        <div className="flex justify-center">
           <Image
             className="max-w-[100%] w-20"
             src={Icon}
             alt="AI Interviewer"
           />
         </div>
-      <div className="sm:mx-auto sm:w-full sm:max-w-lg">
-                <PageHeadline>Tell us more about your interview</PageHeadline>
-            </div>
-      
-
+        <div className="sm:mx-auto sm:w-full sm:max-w-lg">
+          <PageHeadline>What position are you applying for?</PageHeadline>
+        </div>
 
         <div className=" bg-white mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form
             className="space-y-6"
             onSubmit={(e) => {
               e.preventDefault();
-              onSubmit()
-              //handleGenerateQuestions();
+              handleGenerateQuestions();
             }}
           >
+            <div>
+              <InputField
+                id="email"
+                type="email"
+                required
+                label="Email address"
+                onChange={(e) => setUser({ email: e.target.value })}
+                value={user.email || ""}
+              />
+            </div>
 
+            <div>
+              <SelectField
+                id="position"
+                name="position"
+                label="Position"
+                value={config.role || ""}
+                options={Object.entries(interviewRoles).map(([key, value]) => ({
+                  key,
+                  label: value,
+                }))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value in interviewRoles) {
+                    setConfig({ role: value as TInterviewRoleKeys });
+                  }
+                }}
+              />
+            </div>
 
-            <div className="flex flex-col gap-5">
+            <div>
+              <SelectField
+                id="seniorityLevel"
+                name="seniorityLevel"
+                label="Seniority Level"
+                value={config.experienceLevel || ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value in experienceLevels) {
+                    setConfig({
+                      experienceLevel: value as TExperienceLevelKeys,
+                    });
+                  }
+                }}
+                options={Object.entries(experienceLevels).map(
+                  ([key, value]) => ({
+                    key,
+                    label: value,
+                  })
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-5">
               <SelectField
                 id="questionsNum"
                 name="questionsNum"
@@ -160,12 +208,39 @@ export function Step2({onSubmit}:{onSubmit:() => void}) {
                 }}
               />
             </div>
-            <ButtonPrimary>
-              Continue
-            </ButtonPrimary>
+
+            <div>
+              <Checkmark
+                id="sendResultsToEmail"
+                name="sendResultsToEmail"
+                checked={config.sendResultsToEmail}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value) {
+                    setConfig({
+                      sendResultsToEmail: !config.sendResultsToEmail,
+                    });
+                  }
+                }}
+              >
+                Send results to my email address after completion.
+              </Checkmark>
+            </div>
+
+            <div className="mb-3">
+              <ButtonPrimary disabled={!recaptchaToken}>
+                Start The Interview
+              </ButtonPrimary>
+            </div>
+            {!recaptchaToken && (
+              <MemoizedReCAPTCHA
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                onChange={handleRecaptchaChange}
+              />
+            )}
           </form>
         </div>
-        </>
-    
+      </Loader>
+    </PageContentBox>
   );
 }
