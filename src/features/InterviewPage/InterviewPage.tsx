@@ -41,9 +41,8 @@ export function InterviewPage() {
   const setAnswer = useInterviewStore((store) => store.setAnswer);
 
   useEffect(()=>{
-    if(!user.email && !config.experienceLevel || !config.questionsNum || !config.role || !config.timeLimitPerQuestion){
-      push('/');
-    }
+    [!user.email,!config.experienceLevel,!config.questionsNum,!config.role,!config.timeLimitPerQuestion].every((value) => value )
+    push('/')
   }, [user, config])
 
   const recaptchaToken = user.recaptchaToken_evaluate;
