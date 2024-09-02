@@ -5,9 +5,8 @@ import React from "react";
 export function AccessPage(){
     return (
         <div>
-          <h1>Access Page</h1>
-          <p>Welcome to the Access Page. Here you can practice and get evaluated by AI.</p>
-          {/* Add more content or functionality as needed */}
+          <h1>(Some Icon) We are validating your answers.</h1>
+          <p>Check your email for the results</p>
         </div>
       );
 }
