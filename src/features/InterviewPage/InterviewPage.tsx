@@ -6,12 +6,13 @@ import Loader from "@/components/Loader";
 import { PageHeadline } from "@/components/PageHeadline";
 import { Timer, TimerRef } from "@/components/Timer";
 import useInterviewStore from "@/store/useInterviewStore";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useEvaluateAnswersMutation } from "@/services/evaluateAnswers";
 import { PageContentBox } from "@/layout/PageContentBox";
 import ReCAPTCHA from "react-google-recaptcha";
 import React from "react";
+
 
 const MemoizedReCAPTCHA = React.memo(ReCAPTCHA);
 
@@ -38,6 +39,12 @@ export function InterviewPage() {
   const user = useInterviewStore((store) => store.user);
   const setUser = useInterviewStore((store) => store.setUser);
   const setAnswer = useInterviewStore((store) => store.setAnswer);
+
+  useEffect(()=>{
+    if(!user.email && !config.experienceLevel || !config.questionsNum || !config.role || !config.timeLimitPerQuestion){
+      push('/');
+    }
+  }, [user, config])
 
   const recaptchaToken = user.recaptchaToken_evaluate;
   const setRecaptchaToken = (token: string) => {
