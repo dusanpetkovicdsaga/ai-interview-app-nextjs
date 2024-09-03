@@ -1,4 +1,4 @@
-import { AccessPage } from "@/features/AccessPage";
+import { SuccessPage } from "@/features/SuccessPage";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -6,6 +6,6 @@ export const metadata: Metadata = {
   description: "Pratice and get evaluated by AI.",
 };
 
-export default function Access() {
-  return <AccessPage />;
+export default function succes() {
+  return <SuccessPage />;
 }

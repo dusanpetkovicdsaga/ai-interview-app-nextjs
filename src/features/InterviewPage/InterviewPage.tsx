@@ -41,8 +41,18 @@ export function InterviewPage() {
   const setAnswer = useInterviewStore((store) => store.setAnswer);
 
   useEffect(()=>{
-    [!user.email,!config.experienceLevel,!config.questionsNum,!config.role,!config.timeLimitPerQuestion].every((value) => value )
-    push('/')
+    const isAnyValueMissing = [
+      user.email,
+      config.experienceLevel,
+      config.questionsNum,
+      config.role,
+      config.timeLimitPerQuestion
+    ].some(value => !value);
+
+    if (isAnyValueMissing) {
+      push('/');
+    }
+
   }, [user, config])
 
   const recaptchaToken = user.recaptchaToken_evaluate;
