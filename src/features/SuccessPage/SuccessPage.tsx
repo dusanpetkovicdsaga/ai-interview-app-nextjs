@@ -2,7 +2,7 @@
 
 import React from "react";
 
-export function AccessPage(){
+export function SuccessPage(){
     return (
         <div>
           <h1>(Some Icon) We are validating your answers.</h1>
