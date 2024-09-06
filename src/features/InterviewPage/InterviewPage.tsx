@@ -14,6 +14,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import React from "react";
 
 
+
 const MemoizedReCAPTCHA = React.memo(ReCAPTCHA);
 
 export function InterviewPage() {
@@ -82,7 +83,8 @@ export function InterviewPage() {
     });
 
     // set results to state
-    push(`/results/${score.resultId}`);
+    //push(`/results/${score.resultId}`);
+    push(`/success`)
   };
 
   const handleSubmitAnswer = async () => {

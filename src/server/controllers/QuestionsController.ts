@@ -15,6 +15,7 @@ import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
 import { apiVerifyRecaptcha } from "../api/apiVerifyRecaptcha";
 import { saveSession } from "../queries/saveSession";
+import { apiSendSuccessMail } from "../api/apiSendSuccessMail";
 
 export class QuestionsController {
   db: FirebaseFirestore.Firestore;
@@ -42,7 +43,7 @@ export class QuestionsController {
 
   async callEvaluateAnswers(
     data: any
-  ): Promise<TPostEvaluateAnswersResponse | TErrorResponse> {
+  ): Promise<Boolean | TErrorResponse> {
     const { answers, questions, config, user, recaptchaToken } =
       (await SCHEMA.evaluateAnswersSchema.validate(
         data
@@ -97,7 +98,19 @@ export class QuestionsController {
       totalScore,
     };
 
-    return saveResults(this.db, score);
+    const result = await saveResults(this.db, score);
+
+    const resultLink = `http://localhost/results/${result.resultId}`;
+
+    return apiSendSuccessMail(resultLink, user)
+
+
+
+    // send email email via api 
+
+    // /results/{result.resultId}
+
+    // just return 200 
   }
 
   async callGenerateQuestions(
