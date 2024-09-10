@@ -10,7 +10,7 @@ type Props = {
   value?: string;
 };
 
-function InputField({ label, id, type, required = true, onChange, placeholder = 'Enter value', value }: Props) {
+function InputField({ label, id, type, required = false, onChange, placeholder = 'Enter value', value }: Props) {
   const inputProps = {
     id: id,
     name: id,

@@ -2,69 +2,85 @@
 
 import * as Yup from "yup";
 import { ButtonPrimary } from "@/components/ButtonPrimary";
-import Checkmark from "@/components/Checkmark";
-import InputField from "@/components/InputField";
 import { PageHeadline } from "@/components/PageHeadline";
 import { SelectField } from "@/components/SelectField";
-
 import useInterviewStore, {
     TStore,
     TStoreActions,
 } from "@/store/useInterviewStore";
-import { useRouter } from "next/navigation";
-import { SCHEMA, TExperienceLevelKeys, TInterviewRoleKeys } from "@/shared";
-import Loader from "@/components/Loader";
+import { TExperienceLevelKeys, TInterviewRoleKeys } from "@/shared";
 import { useCallback, useState } from "react";
-import { useGenerateQuestionsMutation } from "@/services/generateQuestions";
 import {
     interviewRoles,
     experienceLevels,
-    interviewQuestionsCount,
+
 } from "@/constants";
-import { PageContentBox } from "@/layout/PageContentBox";
 import Icon from "@/assets/ai.png";
 import Image from "next/image";
-import ReCAPTCHA from "react-google-recaptcha";
 import React from "react";
 
-const MemoizedReCAPTCHA = React.memo(ReCAPTCHA);
+
+
+const validationSchema = Yup.object({
+    position: Yup.string()
+        .required('Position is required'),
+    seniorityLevel: Yup.string()
+        // .oneOf(['Junior', 'Mid', 'Senior', 'Lead'], 'Invalid seniority level')
+        .required('Seniority level is required')
+})
+
+
+
+interface FormErrors {
+    position?: string;
+    seniorityLevel?: string;
+
+}
 
 export function Step1({ onSubmit }: { onSubmit: () => void }) {
-    const { push: navigate } = useRouter();
-    const [isLoading, setIsLoading] = useState(false);
+
+
+    const [formErrors, setFormErrors] = useState<FormErrors>({});
+
+
+
+    const validate = async (): Promise<boolean> => {
+        try {
+            const formValues = { position: config.role, seniorityLevel: config.experienceLevel }
+            console.log('formValues', formValues);
+            await validationSchema.validate(formValues, { abortEarly: false });
+            setFormErrors({});
+            return true;
+        } catch (error: any) {
+            const newErrors: FormErrors = {};
+            error.inner.forEach((err: Yup.ValidationError) => {
+                newErrors[err.path as keyof FormErrors] = err.message;
+            });
+            console.log('validate false', newErrors)
+            setFormErrors(newErrors);
+            return false;
+        }
+    };
 
     const selectConfig = (state: TStore) => state.config;
     const selectSetConfig = (state: TStoreActions) => state.setConfig;
-    const selectUser = (state: TStoreActions) => state.setUser;
-    const selectUserData = (state: TStore) => state.user;
-    const selectQuestions = (state: TStoreActions) => state.setQuestions;
-    const selectErrors = (state: TStoreActions) => state.setErrors;
+
 
     const setConfig = useInterviewStore(selectSetConfig);
-    const setUser = useInterviewStore(selectUser);
-    const setQuestions = useInterviewStore(selectQuestions);
+
 
     const config = useInterviewStore(selectConfig);
-    const user = useInterviewStore(selectUserData);
 
-    const recaptchaToken = user.recaptchaToken;
-    const setRecaptchaToken = (token: string) => {
-        setUser({ recaptchaToken: token });
-    };
+    const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-    const setErrors = useInterviewStore(selectErrors);
-
-    const { mutateAsync: generateQuestions } = useGenerateQuestionsMutation();
-
-    const handleRecaptchaChange = useCallback(
-        (value: string | null) => {
-            if (!value) return;
-
-            setRecaptchaToken(value);
-        },
-        [setRecaptchaToken]
-    );
-
+        const isValid = await validate();
+        console.log("is Valid", isValid);
+        console.log('formErrors', formErrors);
+        if (isValid) {
+            onSubmit();
+        }
+    }
 
     return (
         <>
@@ -82,11 +98,7 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
             <div className=" bg-white mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form
                     className="space-y-6"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        onSubmit()
-                        // handleGenerateQuestions();
-                    }}
+                    onSubmit={handleSubmitForm}
                 >
 
 
@@ -107,6 +119,9 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
                                 }
                             }}
                         />
+                        {formErrors.position && (
+                            <div className="mt-1 text-red-600 text-sm animate-fadeIn animate-slideDown">{formErrors.position}</div>
+                        )}
                     </div>
 
                     <div>
@@ -130,6 +145,9 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
                                 })
                             )}
                         />
+                        {formErrors.seniorityLevel && (
+                            <div className="mt-1 text-red-600 text-sm animate-fadeIn animate-slideDown">{formErrors.seniorityLevel}</div>
+                        )}
                         <div className="mb-3">
                             <ButtonPrimary className="mt-5">
                                 Continue

@@ -12,7 +12,15 @@ const config: Config = {
   theme: {
     extend: {
       animation: {
-        slideDown: "slideDown 0.7s ease-out forwards",
+        slideDown: "slideDown 0.4s ease-out forwards",
+        fadeIn: 'fadeIn 0.5s ease-out'
+
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        }
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

@@ -1,11 +1,7 @@
 "use client";
 
 import * as Yup from "yup";
-import { ButtonPrimary } from "@/components/ButtonPrimary";
-import Checkmark from "@/components/Checkmark";
-import InputField from "@/components/InputField";
-import { PageHeadline } from "@/components/PageHeadline";
-import { SelectField } from "@/components/SelectField";
+
 
 import useInterviewStore, {
   TStore,
