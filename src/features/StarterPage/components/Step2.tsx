@@ -2,170 +2,143 @@
 
 import * as Yup from "yup";
 import { ButtonPrimary } from "@/components/ButtonPrimary";
-import Checkmark from "@/components/Checkmark";
-import InputField from "@/components/InputField";
 import { PageHeadline } from "@/components/PageHeadline";
 import { SelectField } from "@/components/SelectField";
-
+import { useState } from "react";
 import useInterviewStore, {
   TStore,
   TStoreActions,
 } from "@/store/useInterviewStore";
-import { useRouter } from "next/navigation";
-import { SCHEMA, TExperienceLevelKeys, TInterviewRoleKeys } from "@/shared";
-import Loader from "@/components/Loader";
-import { useCallback, useState } from "react";
-import { useGenerateQuestionsMutation } from "@/services/generateQuestions";
 import {
-  interviewRoles,
-  experienceLevels,
   interviewQuestionsCount,
 } from "@/constants";
-import { PageContentBox } from "@/layout/PageContentBox";
 import Icon from "@/assets/ai.png";
 import Image from "next/image";
-import ReCAPTCHA from "react-google-recaptcha";
 import React from "react";
 
-const MemoizedReCAPTCHA = React.memo(ReCAPTCHA);
+const validationSchema = Yup.object({
+  questionsNum: Yup.number()
+    .required('Questions are required'),
+  timeLimitPerQuestion: Yup.number()
+    .required('Time limit is required'),
 
-export function Step2({onSubmit}:{onSubmit:() => void}) {
-  const { push: navigate } = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+});
+
+interface FormErrors {
+  questionsNum?: string;
+  timeLimitPerQuestion?: string;
+
+}
+
+
+export function Step2({ onSubmit }: { onSubmit: () => void }) {
+
 
   const selectConfig = (state: TStore) => state.config;
   const selectSetConfig = (state: TStoreActions) => state.setConfig;
-  const selectUser = (state: TStoreActions) => state.setUser;
-  const selectUserData = (state: TStore) => state.user;
-  const selectQuestions = (state: TStoreActions) => state.setQuestions;
-  const selectErrors = (state: TStoreActions) => state.setErrors;
-
   const setConfig = useInterviewStore(selectSetConfig);
-  const setUser = useInterviewStore(selectUser);
-  const setQuestions = useInterviewStore(selectQuestions);
-
   const config = useInterviewStore(selectConfig);
-  const user = useInterviewStore(selectUserData);
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
 
-  const recaptchaToken = user.recaptchaToken;
-  const setRecaptchaToken = (token: string) => {
-    setUser({ recaptchaToken: token });
-  };
 
-  const setErrors = useInterviewStore(selectErrors);
 
-  const { mutateAsync: generateQuestions } = useGenerateQuestionsMutation();
 
-  const handleRecaptchaChange = useCallback(
-    (value: string | null) => {
-      if (!value) return;
-
-      setRecaptchaToken(value);
-    },
-    [setRecaptchaToken]
-  );
-
-  const handleGenerateQuestions = async () => {
+  const validate = async (): Promise<boolean> => {
     try {
-      if (!recaptchaToken) throw new Error("Please complete the recaptcha");
-      setIsLoading(true);
-      const { role, experienceLevel, questionsNum } =
-        await SCHEMA.questionsQuerySchema
-          .concat(
-            Yup.object().shape({ sendResultsToEmail: Yup.bool().required() })
-          )
-          .validate({ ...config, recaptchaToken });
-
-      const questions = await generateQuestions({
-        recaptchaToken: recaptchaToken,
-        role: role,
-        experienceLevel: experienceLevel,
-        questionsNum: questionsNum,
+      const formValues = { questionsNum: config.questionsNum, timeLimitPerQuestion: config.timeLimitPerQuestion }
+      await validationSchema.validate(formValues, { abortEarly: false });
+      setFormErrors({});
+      return true;
+    } catch (error: any) {
+      const newErrors: FormErrors = {};
+      error.inner.forEach((err: Yup.ValidationError) => {
+        newErrors[err.path as keyof FormErrors] = err.message;
       });
-
-      console.log(questions);
-
-      if (questions) setQuestions(questions);
-
-      // transition to the next page (INREVIEW PAGE)
-      navigate("/qa");
-    } catch (err) {
-      console.log(err);
-      setErrors([
-        {
-          message: "Something went wrong. Please try again later.",
-          type: "error",
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
+      setFormErrors(newErrors);
+      return false;
     }
   };
 
+
+  const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const isValid = await validate();
+    if (isValid) {
+      onSubmit();
+    }
+  }
+
+
   return (
-    
-     <>
-       <div className="flex justify-center">
-          <Image
-            className="max-w-[100%] w-20"
-            src={Icon}
-            alt="AI Interviewer"
-          />
-        </div>
+
+    <>
+      <div className="flex justify-center">
+        <Image
+          className="max-w-[100%] w-20"
+          src={Icon}
+          alt="AI Interviewer"
+        />
+      </div>
       <div className="sm:mx-auto sm:w-full sm:max-w-lg">
-                <PageHeadline>Tell us more about your interview</PageHeadline>
-            </div>
-      
+        <PageHeadline>Tell us more about your interview</PageHeadline>
+      </div>
 
 
-        <div className=" bg-white mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form
-            className="space-y-6"
-            onSubmit={(e) => {
-              e.preventDefault();
-              onSubmit()
-              //handleGenerateQuestions();
-            }}
-          >
+
+      <div className=" bg-white mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form
+          className="space-y-6 "
+          onSubmit={
+            handleSubmitForm
+          }
+        >
 
 
-            <div className="flex flex-col gap-5">
-              <SelectField
-                id="questionsNum"
-                name="questionsNum"
-                label="Questions"
-                value={config.questionsNum?.toString() || undefined}
-                options={interviewQuestionsCount.map((count) =>
-                  count.toString()
-                )}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value) {
-                    setConfig({ questionsNum: parseInt(value) });
-                  }
-                }}
-              />
+          <div >
+            <SelectField
+              id="questionsNum"
+              name="questionsNum"
+              label="Questions"
+              value={config.questionsNum?.toString() || undefined}
+              options={interviewQuestionsCount.map((count) =>
+                count.toString()
+              )}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value) {
+                  setConfig({ questionsNum: parseInt(value) });
+                }
+              }}
+            />
+            {formErrors.questionsNum && (
+              <div className="mt-1  text-red-600 text-sm animate-fadeIn animate-slideDown">{formErrors.questionsNum}</div>
+            )}
+          </div>
+          <div>
+            <SelectField
+              id="timeLimitPerQuestion"
+              name="timeLimitPerQuestion"
+              label="Time Limit Per Question"
+              value={config.timeLimitPerQuestion?.toString() || undefined}
+              options={["5", "10", "15", "20"]}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value) {
+                  setConfig({ timeLimitPerQuestion: parseInt(value) });
+                }
+              }}
+            />
+            {formErrors.timeLimitPerQuestion && (
+              <div className="mt-1 text-red-600 text-sm animate-fadeIn animate-slideDown">{formErrors.timeLimitPerQuestion}</div>
+            )}
+          </div>
+          <ButtonPrimary>
+            Continue
+          </ButtonPrimary>
+        </form>
+      </div>
+    </>
 
-              <SelectField
-                id="timeLimitPerQuestion"
-                name="timeLimitPerQuestion"
-                label="Time Limit Per Question"
-                value={config.timeLimitPerQuestion?.toString() || undefined}
-                options={["5", "10", "15", "20"]}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value) {
-                    setConfig({ timeLimitPerQuestion: parseInt(value) });
-                  }
-                }}
-              />
-            </div>
-            <ButtonPrimary>
-              Continue
-            </ButtonPrimary>
-          </form>
-        </div>
-        </>
-    
   );
 }
