@@ -14,12 +14,12 @@ export async function apiSendSuccessMail(resultLink: string, user: User) {
 
 
   const { data, error } = await resend.emails.send({
-    from: 'Acme <onboarding@resend.dev>',
+    from: 'Ai Bot <mail@ai-bot.dsaga.dev>',
     to: [user.email],
-    subject: 'Hello world',
+    subject: 'AI Bot - Your interview results',
     react: EmailTemplate({ resultLink }),
   });
-
+  console.log("sending success email", data, error);
   return true
 
 }

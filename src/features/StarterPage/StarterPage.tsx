@@ -119,18 +119,18 @@ export function StarterPage() {
   };
 
   return (
-    <>
+
     <Loader isLoading={isLoading}>
       <PageContentBox className=" border-blue-400 border-4 h-screen">
-        
-          <div>
-            {renderCurrentStep()}
-          </div>
-        
+
+        <div>
+          {renderCurrentStep()}
+        </div>
+
       </PageContentBox>
-      </Loader>
+    </Loader>
 
 
-    </>
+
   );
 }

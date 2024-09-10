@@ -17,6 +17,8 @@ import { apiVerifyRecaptcha } from "../api/apiVerifyRecaptcha";
 import { saveSession } from "../queries/saveSession";
 import { apiSendSuccessMail } from "../api/apiSendSuccessMail";
 
+
+
 export class QuestionsController {
   db: FirebaseFirestore.Firestore;
   constructor(db: FirebaseFirestore.Firestore) {
@@ -100,17 +102,15 @@ export class QuestionsController {
 
     const result = await saveResults(this.db, score);
 
-    const resultLink = `http://localhost/results/${result.resultId}`;
+    const HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME;
+
+    const resultLink = `${HOSTNAME}/results/${result.resultId}`;
 
     return apiSendSuccessMail(resultLink, user)
 
 
 
-    // send email email via api 
 
-    // /results/{result.resultId}
-
-    // just return 200 
   }
 
   async callGenerateQuestions(
