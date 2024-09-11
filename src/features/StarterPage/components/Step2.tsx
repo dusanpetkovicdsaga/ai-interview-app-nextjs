@@ -30,7 +30,6 @@ interface FormErrors {
 
 }
 
-
 export function Step2({ onSubmit }: { onSubmit: () => void }) {
 
 
@@ -62,7 +61,6 @@ export function Step2({ onSubmit }: { onSubmit: () => void }) {
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const isValid = await validate();
     if (isValid) {
       onSubmit();
@@ -71,7 +69,6 @@ export function Step2({ onSubmit }: { onSubmit: () => void }) {
 
 
   return (
-
     <>
       <div className="flex justify-center">
         <Image
@@ -83,9 +80,6 @@ export function Step2({ onSubmit }: { onSubmit: () => void }) {
       <div className="sm:mx-auto sm:w-full sm:max-w-lg">
         <PageHeadline>Tell us more about your interview</PageHeadline>
       </div>
-
-
-
       <div className=" bg-white mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form
           className="space-y-6 "
@@ -93,8 +87,6 @@ export function Step2({ onSubmit }: { onSubmit: () => void }) {
             handleSubmitForm
           }
         >
-
-
           <div >
             <SelectField
               id="questionsNum"
@@ -139,6 +131,5 @@ export function Step2({ onSubmit }: { onSubmit: () => void }) {
         </form>
       </div>
     </>
-
   );
 }

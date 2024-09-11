@@ -9,7 +9,7 @@ import useInterviewStore, {
     TStoreActions,
 } from "@/store/useInterviewStore";
 import { TExperienceLevelKeys, TInterviewRoleKeys } from "@/shared";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import {
     interviewRoles,
     experienceLevels,
@@ -30,7 +30,6 @@ const validationSchema = Yup.object({
 })
 
 
-
 interface FormErrors {
     position?: string;
     seniorityLevel?: string;
@@ -39,10 +38,7 @@ interface FormErrors {
 
 export function Step1({ onSubmit }: { onSubmit: () => void }) {
 
-
     const [formErrors, setFormErrors] = useState<FormErrors>({});
-
-
 
     const validate = async (): Promise<boolean> => {
         try {
@@ -64,11 +60,7 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
 
     const selectConfig = (state: TStore) => state.config;
     const selectSetConfig = (state: TStoreActions) => state.setConfig;
-
-
     const setConfig = useInterviewStore(selectSetConfig);
-
-
     const config = useInterviewStore(selectConfig);
 
     const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -100,8 +92,6 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
                     className="space-y-6"
                     onSubmit={handleSubmitForm}
                 >
-
-
                     <div>
                         <SelectField
                             id="position"
@@ -123,7 +113,6 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
                             <div className="mt-1 text-red-600 text-sm animate-fadeIn animate-slideDown">{formErrors.position}</div>
                         )}
                     </div>
-
                     <div>
                         <SelectField
                             id="seniorityLevel"
