@@ -43,7 +43,6 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
     const validate = async (): Promise<boolean> => {
         try {
             const formValues = { position: config.role, seniorityLevel: config.experienceLevel }
-            console.log('formValues', formValues);
             await validationSchema.validate(formValues, { abortEarly: false });
             setFormErrors({});
             return true;
@@ -52,7 +51,6 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
             error.inner.forEach((err: Yup.ValidationError) => {
                 newErrors[err.path as keyof FormErrors] = err.message;
             });
-            console.log('validate false', newErrors)
             setFormErrors(newErrors);
             return false;
         }
@@ -67,8 +65,6 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
         e.preventDefault();
 
         const isValid = await validate();
-        console.log("is Valid", isValid);
-        console.log('formErrors', formErrors);
         if (isValid) {
             onSubmit();
         }

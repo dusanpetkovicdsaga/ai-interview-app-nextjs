@@ -49,7 +49,7 @@ export async function apiAnswerQuestions(query: string) {
         content: query,
       },
     ],
-    model: "gpt-3.5-turbo",
+    model: "gpt-4o-mini",
     functions,
     function_call: "auto",
     temperature: 0.5,

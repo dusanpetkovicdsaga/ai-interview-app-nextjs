@@ -87,7 +87,6 @@ export function StarterPage() {
         questionsNum: questionsNum,
       });
 
-      console.log(questions);
 
       if (questions) setQuestions(questions);
 

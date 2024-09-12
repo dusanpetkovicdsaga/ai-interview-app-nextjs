@@ -45,7 +45,7 @@ export class QuestionsController {
 
   async callEvaluateAnswers(
     data: any
-  ): Promise<Boolean | any> {
+  ): Promise<Boolean | never> {
     const { answers, questions, config, user, recaptchaToken } =
       (await SCHEMA.evaluateAnswersSchema.validate(
         data
@@ -53,7 +53,7 @@ export class QuestionsController {
 
     const validation = await apiVerifyRecaptcha(recaptchaToken);
     if (validation.success === false) {
-      return { error: "Recaptcha validation failed", key: "recaptcha" };
+      throw new Error("Recaptcha validation failed.");
     }
 
     saveSession(this.db, { answers, questions, config, user });
@@ -105,8 +105,8 @@ export class QuestionsController {
     const HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME;
 
     if (!HOSTNAME) {
-      console.error("HOSTNAME environment variable is not set.");
-      return { error: "HOSTNAME environment variable is not set." };
+
+      throw new Error("HOSTNAME environment variable is not set.");
     }
 
     const resultLink = `${HOSTNAME}/results/${result.resultId}`;
