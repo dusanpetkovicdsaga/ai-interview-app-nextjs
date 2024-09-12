@@ -5,15 +5,11 @@ import { ButtonPrimary } from "@/components/ButtonPrimary";
 import Checkmark from "@/components/Checkmark";
 import InputField from "@/components/InputField";
 import { PageHeadline } from "@/components/PageHeadline";
-
 import useInterviewStore, {
   TStore,
   TStoreActions,
 } from "@/store/useInterviewStore";
-
 import { useCallback, useState } from "react";
-import { useGenerateQuestionsMutation } from "@/services/generateQuestions";
-
 import Icon from "@/assets/ai.png";
 import Image from "next/image";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -40,12 +36,10 @@ export function Step3({ onSubmit }: { onSubmit: () => void }) {
 
   const setConfig = useInterviewStore(selectSetConfig);
   const setUser = useInterviewStore(selectUser);
-
-
   const config = useInterviewStore(selectConfig);
   const user = useInterviewStore(selectUserData);
-
   const recaptchaToken = user.recaptchaToken;
+
   const setRecaptchaToken = (token: string) => {
     setUser({ recaptchaToken: token });
   };
@@ -92,13 +86,11 @@ export function Step3({ onSubmit }: { onSubmit: () => void }) {
   };
 
   return (
-
     <div className=" bg-white mt-10  sm:mx-auto sm:w-full sm:max-w-sm">
       <form
         className="space-y-6"
         onSubmit={handleSubmit}
       >
-
         <div>
           <div className="flex justify-center">
             <Image
@@ -122,7 +114,6 @@ export function Step3({ onSubmit }: { onSubmit: () => void }) {
             <div className="mt-1 text-red-600 text-sm animate-fadeIn">{errors.email}</div>
           )}
         </div>
-
         <div>
           <Checkmark
             id="sendResultsToEmail"
@@ -147,17 +138,12 @@ export function Step3({ onSubmit }: { onSubmit: () => void }) {
 
           />
         )}
-
         <div className="mb-3">
           <ButtonPrimary >
             Start The Interview
           </ButtonPrimary>
         </div>
-
-
-
       </form>
     </div>
-
   );
 }

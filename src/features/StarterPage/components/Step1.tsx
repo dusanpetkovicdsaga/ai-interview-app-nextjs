@@ -9,7 +9,7 @@ import useInterviewStore, {
     TStoreActions,
 } from "@/store/useInterviewStore";
 import { TExperienceLevelKeys, TInterviewRoleKeys } from "@/shared";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import {
     interviewRoles,
     experienceLevels,
@@ -30,7 +30,6 @@ const validationSchema = Yup.object({
 })
 
 
-
 interface FormErrors {
     position?: string;
     seniorityLevel?: string;
@@ -39,15 +38,11 @@ interface FormErrors {
 
 export function Step1({ onSubmit }: { onSubmit: () => void }) {
 
-
     const [formErrors, setFormErrors] = useState<FormErrors>({});
-
-
 
     const validate = async (): Promise<boolean> => {
         try {
             const formValues = { position: config.role, seniorityLevel: config.experienceLevel }
-            console.log('formValues', formValues);
             await validationSchema.validate(formValues, { abortEarly: false });
             setFormErrors({});
             return true;
@@ -56,7 +51,6 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
             error.inner.forEach((err: Yup.ValidationError) => {
                 newErrors[err.path as keyof FormErrors] = err.message;
             });
-            console.log('validate false', newErrors)
             setFormErrors(newErrors);
             return false;
         }
@@ -64,19 +58,13 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
 
     const selectConfig = (state: TStore) => state.config;
     const selectSetConfig = (state: TStoreActions) => state.setConfig;
-
-
     const setConfig = useInterviewStore(selectSetConfig);
-
-
     const config = useInterviewStore(selectConfig);
 
     const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const isValid = await validate();
-        console.log("is Valid", isValid);
-        console.log('formErrors', formErrors);
         if (isValid) {
             onSubmit();
         }
@@ -100,8 +88,6 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
                     className="space-y-6"
                     onSubmit={handleSubmitForm}
                 >
-
-
                     <div>
                         <SelectField
                             id="position"
@@ -123,7 +109,6 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
                             <div className="mt-1 text-red-600 text-sm animate-fadeIn animate-slideDown">{formErrors.position}</div>
                         )}
                     </div>
-
                     <div>
                         <SelectField
                             id="seniorityLevel"
