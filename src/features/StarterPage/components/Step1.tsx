@@ -72,20 +72,20 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
 
     return (
         <>
-            <div className="flex justify-center">
+            <div className="flex justify-center ">
                 <Image
                     className="max-w-[100%] w-20"
                     src={Icon}
                     alt="AI Interviewer"
                 />
             </div>
-            <div className="sm:mx-auto sm:w-full sm:max-w-lg">
+            <div className="sm:mx-auto sm:w-full sm:max-w-lg mb-5">
                 <PageHeadline>What position are you applying for?</PageHeadline>
             </div>
 
-            <div className=" bg-white mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            <div className=" bg-white mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form
-                    className="space-y-6"
+                    className="flex flex-col gap-6"
                     onSubmit={handleSubmitForm}
                 >
                     <div>
@@ -109,38 +109,42 @@ export function Step1({ onSubmit }: { onSubmit: () => void }) {
                             <div className="mt-1 text-red-600 text-sm animate-fadeIn animate-slideDown">{formErrors.position}</div>
                         )}
                     </div>
-                    <div>
-                        <SelectField
-                            id="seniorityLevel"
-                            name="seniorityLevel"
-                            label="Seniority Level"
-                            value={config.experienceLevel || ""}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                if (value in experienceLevels) {
-                                    setConfig({
-                                        experienceLevel: value as TExperienceLevelKeys,
-                                    });
-                                }
-                            }}
-                            options={Object.entries(experienceLevels).map(
-                                ([key, value]) => ({
-                                    key,
-                                    label: value,
-                                })
-                            )}
-                        />
-                        {formErrors.seniorityLevel && (
-                            <div className="mt-1 text-red-600 text-sm animate-fadeIn animate-slideDown">{formErrors.seniorityLevel}</div>
+
+                    <SelectField
+                        id="seniorityLevel"
+                        name="seniorityLevel"
+                        label="Seniority Level"
+                        value={config.experienceLevel || ""}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (value in experienceLevels) {
+                                setConfig({
+                                    experienceLevel: value as TExperienceLevelKeys,
+                                });
+                            }
+                        }}
+                        options={Object.entries(experienceLevels).map(
+                            ([key, value]) => ({
+                                key,
+                                label: value,
+                            })
                         )}
-                        <div className="mb-3">
-                            <ButtonPrimary className="mt-5">
-                                Continue
-                            </ButtonPrimary>
-                        </div>
+                    />
+                    {formErrors.seniorityLevel && (
+                        <div className="mt-1 text-red-600 text-sm animate-fadeIn animate-slideDown">{formErrors.seniorityLevel}</div>
+                    )}
+                    <div className="">
+
                     </div>
-                </form>
-            </div>
+
+                    <div className="mb-3 justify-self-end">
+                        <ButtonPrimary >
+                            Continue
+                        </ButtonPrimary>
+                    </div>
+
+                </form >
+            </div >
         </>
     );
 }

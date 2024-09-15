@@ -24,6 +24,8 @@ export type Config = {
 
 export type User = {
   email: Nullable<string>;
+  firstName: Nullable<string>;
+  lastName: Nullable<string>;
   recaptchaToken: Nullable<string>;
   recaptchaToken_evaluate: Nullable<string>;
 };
