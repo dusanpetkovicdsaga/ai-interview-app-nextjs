@@ -56,6 +56,8 @@ export type TStoreActions = {
 const initialStoreState = {
   user: {
     email: null,
+    firstName: null,
+    lastName: null,
     recaptchaToken: null,
     recaptchaToken_evaluate: null,
   },
@@ -92,6 +94,7 @@ const useInterviewStore = create<TStore & TStoreActions>((set, get) => ({
       const answered = [...state.answered, answeredQuestion];
       return { answered };
     }),
+
   setConfig: (config: Partial<Config>) =>
     set((state: TStore) => ({ config: { ...state.config, ...config } })),
   setUser: (user) =>
