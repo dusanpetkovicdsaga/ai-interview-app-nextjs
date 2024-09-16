@@ -21,6 +21,12 @@ export const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email('Invalid email address')
     .required('Email address is required'),
+  firstName: Yup.string()
+    .matches(/^[a-zA-Z]+$/, 'First name can only contain letters')
+    .required('First name is required'),
+  lastName: Yup.string()
+    .matches(/^[a-zA-Z]+$/, 'Last name can only contain letters')
+    .required('Last name is required'),
   recaptchaToken: Yup.string()
     .required('Please complete the reCAPTCHA'),
 });
@@ -44,7 +50,7 @@ export function Step3({ onSubmit }: { onSubmit: () => void }) {
     setUser({ recaptchaToken: token });
   };
 
-  const [errors, setErrors] = useState<{ email?: string; recaptchaToken?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; recaptchaToken?: string; firstName?: string; lastName?: string }>({});
 
 
 
@@ -64,6 +70,8 @@ export function Step3({ onSubmit }: { onSubmit: () => void }) {
       // Validate the form values
       await validationSchema.validate({
         email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
         recaptchaToken,
       }, { abortEarly: false });
 
@@ -86,7 +94,7 @@ export function Step3({ onSubmit }: { onSubmit: () => void }) {
   };
 
   return (
-    <div className=" bg-white mt-10  sm:mx-auto sm:w-full sm:max-w-sm">
+    <div className=" bg-white mt-4  sm:mx-auto sm:w-full sm:max-w-sm">
       <form
         className="space-y-6"
         onSubmit={handleSubmit}
@@ -99,7 +107,7 @@ export function Step3({ onSubmit }: { onSubmit: () => void }) {
               alt="AI Interviewer"
             />
           </div>
-          <div className="sm:mx-auto sm:w-full sm:max-w-lg mb-10">
+          <div className="sm:mx-auto sm:w-full sm:max-w-lg mb-5">
             <PageHeadline>Who is taking the interview?</PageHeadline>
           </div>
 
@@ -110,40 +118,56 @@ export function Step3({ onSubmit }: { onSubmit: () => void }) {
             onChange={(e) => setUser({ email: e.target.value })}
             value={user.email || ""}
           />
+          <div className="mt-1">
+            <p className="text-xs">The results will be sent to your email address.</p>
+          </div>
           {errors.email && (
             <div className="mt-1 text-red-600 text-sm animate-fadeIn">{errors.email}</div>
           )}
         </div>
-        <div>
-          <Checkmark
-            id="sendResultsToEmail"
-            name="sendResultsToEmail"
-            checked={config.sendResultsToEmail}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (value) {
-                setConfig({
-                  sendResultsToEmail: !config.sendResultsToEmail,
-                });
-              }
-            }}
-          >
-            Send results to my email address after completion.
-          </Checkmark>
-        </div>
-        {!recaptchaToken && (
-          <MemoizedReCAPTCHA
-            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-            onChange={handleRecaptchaChange}
+        <div className="flex gap-2">
+          <div className="flex flex-col">
+            <InputField
+              id="firstName"
+              type="text"
+              label="First Name"
+              onChange={(e) => setUser({ firstName: e.target.value })}
+              value={user.firstName || ""}
+            />
+            {errors.firstName && (
+              <div className="mt-1 text-red-600 text-xs animate-fadeIn">{errors.firstName}</div>
+            )}
+          </div>
+          <div className="flex flex-col">
+            <InputField
+              id="lastName"
+              type="text"
+              label="Last Name"
+              onChange={(e) => setUser({ lastName: e.target.value })}
+              value={user.lastName || ""}
+            />
+            {errors.lastName && (
+              <div className="mt-1 text-red-600 text-xs animate-fadeIn">{errors.lastName}</div>
+            )}
+          </div>
 
-          />
-        )}
-        <div className="mb-3">
+        </div>
+
+        {
+          !recaptchaToken && (
+            <MemoizedReCAPTCHA
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+              onChange={handleRecaptchaChange}
+
+            />
+          )
+        }
+        <div>
           <ButtonPrimary >
             Start The Interview
           </ButtonPrimary>
         </div>
-      </form>
-    </div>
+      </form >
+    </div >
   );
 }
