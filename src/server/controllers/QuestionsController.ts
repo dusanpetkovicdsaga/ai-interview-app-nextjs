@@ -94,7 +94,12 @@ export class QuestionsController {
     const score = {
       certificateId: certificateId,
       config,
-      user,
+      user: {
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+
+      },
       questions: processedAnswers.questions ? processedAnswers.questions : [],
       answers,
       totalScore,
