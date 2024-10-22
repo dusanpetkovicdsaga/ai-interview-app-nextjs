@@ -7,7 +7,7 @@ export type TScoreEntity = {
   certificateId: string;
   user: User;
   config: Config;
-  questions: Array<TQuestionEntity & { score: number, reason: string }>;
+  questions: Array<TQuestionEntity & { score: number; reason: string }>;
   answers: Array<TAnswerEntity>;
   totalScore: number;
 };
@@ -35,7 +35,10 @@ export type TQuestionEntity = {
   id: string;
 };
 
-export type TQuestionEntityWithScore = TQuestionEntity & { score: number, reason: string };
+export type TQuestionEntityWithScore = TQuestionEntity & {
+  score: number;
+  reason: string;
+};
 
 export type TGetQuestions = {
   questions: Array<TQuestionEntity>;
@@ -45,8 +48,12 @@ export type TGetQuestions = {
 export type TErrorResponse = {
   error: string;
   key: string;
-}
+};
 
 export type TGetQuestionsResponse = Array<TQuestionEntity>;
 
 export type TQuestionsQuery = Yup.InferType<typeof questionsQuerySchema>;
+
+const test: TQuestionsQuery = {
+  recaptchaToken: 10,
+};

@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  front:
+    container_name: ai-bot
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
+    labels:
+      - "traefik.http.routers.front.rule=Host(`ai-bot.dsaga.dev`)"
+    networks:
+      - traefik-network
+
+networks:
+  traefik-network:
+    external: true
