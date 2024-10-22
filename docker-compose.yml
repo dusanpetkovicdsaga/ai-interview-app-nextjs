@@ -12,7 +12,7 @@ services:
     environment:
       - NODE_ENV=production
     labels:
-      - "traefik.http.routers.front.rule=Host(`ai-bot.dsaga.dev`)"
+      - "traefik.http.routers.ai-bot.rule=Host(`ai-bot.dsaga.dev`)"
     networks:
       - traefik-network
 
