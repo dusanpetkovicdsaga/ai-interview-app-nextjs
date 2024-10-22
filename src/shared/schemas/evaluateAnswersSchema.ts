@@ -13,6 +13,12 @@ export const evaluateAnswersSchema = Yup.object()
   .shape({
     user: Yup.object({
       email: Yup.string().email().required(),
+      firstName: Yup.string()
+        .matches(/^[a-zA-Z]+$/, 'First name can only contain letters')
+        .required('First name is required'),
+      lastName: Yup.string()
+        .matches(/^[a-zA-Z]+$/, 'Last name can only contain letters')
+        .required('Last name is required'),
     }).required(),
     answers: Yup.array().of(answerEntitySchema).required(),
     questions: Yup.array().of(questionEntitySchema).required(),
