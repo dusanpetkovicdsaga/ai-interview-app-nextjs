@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  front:
+  ai-bot:
     container_name: ai-bot
     build:
       context: ./
