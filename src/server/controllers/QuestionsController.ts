@@ -17,8 +17,6 @@ import { apiVerifyRecaptcha } from "../api/apiVerifyRecaptcha";
 import { saveSession } from "../queries/saveSession";
 import { apiSendSuccessMail } from "../api/apiSendSuccessMail";
 
-
-
 export class QuestionsController {
   db: FirebaseFirestore.Firestore;
   constructor(db: FirebaseFirestore.Firestore) {
@@ -43,9 +41,7 @@ export class QuestionsController {
     }
   }
 
-  async callEvaluateAnswers(
-    data: any
-  ): Promise<Boolean | never> {
+  async callEvaluateAnswers(data: any): Promise<Boolean | never> {
     const { answers, questions, config, user, recaptchaToken } =
       (await SCHEMA.evaluateAnswersSchema.validate(
         data
@@ -98,25 +94,24 @@ export class QuestionsController {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-
       },
       questions: processedAnswers.questions ? processedAnswers.questions : [],
       answers,
       totalScore,
     };
 
+    // @ts-ignore
     const result = await saveResults(this.db, score);
 
     const HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME;
 
     if (!HOSTNAME) {
-
       throw new Error("HOSTNAME environment variable is not set.");
     }
 
     const resultLink = `${HOSTNAME}/results/${result.resultId}`;
 
-    return apiSendSuccessMail(resultLink, user)
+    return apiSendSuccessMail(resultLink, user);
   }
 
   async callGenerateQuestions(

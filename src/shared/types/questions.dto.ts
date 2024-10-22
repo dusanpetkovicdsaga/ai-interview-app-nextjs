@@ -53,7 +53,3 @@ export type TErrorResponse = {
 export type TGetQuestionsResponse = Array<TQuestionEntity>;
 
 export type TQuestionsQuery = Yup.InferType<typeof questionsQuerySchema>;
-
-const test: TQuestionsQuery = {
-  recaptchaToken: 10,
-};
