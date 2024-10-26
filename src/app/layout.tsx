@@ -4,25 +4,23 @@ import "./globals.css";
 import { PageLayout } from "@/layout/PageLayout";
 import ErrorsProvider from "@/providers/ErrorsProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
-// import { taglogInit } from "taglog-nodejs-client";
+import { taglogInit } from "taglog-nextjs-client";
 
 const inter = Inter({ subsets: ["latin"] });
 
-// const { captureInfo } = taglogInit({
-//   accessKey: "9c7ed2c7-bbaf-4c14-ba18-337a932b0ed2",
-//   defaultChannel: "server-logs",
-//   serverURL: "http://localhost:3000/api",
-//   options: {
-//     captureConsole: true,
-//   },
-// });
+if (process.env.TAGLOG_ACCESS_KEY) {
+  const logger = taglogInit({
+    accessKey: process.env.TAGLOG_ACCESS_KEY,
+    defaultChannel: "default",
+    options: { captureConsole: true },
+  });
+  logger.captureInfo("Hello from server");
+}
 
 export const metadata: Metadata = {
   title: "AI Tech Interview App",
   description: "Practice and get evaluated by AI.",
 };
-
-// captureInfo("test from server");
 
 export default function RootLayout({
   children,
