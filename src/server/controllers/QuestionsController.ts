@@ -103,7 +103,7 @@ export class QuestionsController {
     // @ts-ignore
     const result = await saveResults(this.db, score);
 
-    const HOSTNAME = process.env.NEXT_PUBLIC_HOSTNAME;
+    const HOSTNAME = process.env.HOSTNAME;
 
     if (!HOSTNAME) {
       throw new Error("HOSTNAME environment variable is not set.");
