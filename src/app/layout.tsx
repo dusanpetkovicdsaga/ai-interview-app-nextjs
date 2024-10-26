@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 if (process.env.TAGLOG_ACCESS_KEY) {
   const logger = taglogInit({
     accessKey: process.env.TAGLOG_ACCESS_KEY,
-    defaultChannel: "default",
+    defaultChannel: "default-channel",
     options: { captureConsole: true },
   });
   logger.captureInfo("Hello from server");
