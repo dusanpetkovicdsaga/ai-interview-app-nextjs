@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { EmailTemplate } from "@/email-templates/success";
 import { Resend } from "resend";
 import { User } from "@/store/useInterviewStore";
+import { captureInfo } from "taglog-nextjs-client";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -16,6 +17,6 @@ export async function apiSendSuccessMail(resultLink: string, user: User) {
     subject: "AI Bot - Your interview results",
     react: EmailTemplate({ resultLink }),
   });
-  console.log("sending success email", data, error);
+  captureInfo("sending success email", { data, error });
   return true;
 }

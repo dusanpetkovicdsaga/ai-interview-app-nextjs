@@ -1,4 +1,5 @@
 import OpenAi from "openai";
+import { captureInfo } from "taglog-nextjs-client";
 
 export async function apisendQuestion(question: string) {
   const openai = new OpenAi({ apiKey: process.env.OPEN_AI_ACCESS_TOKEN });
@@ -55,7 +56,7 @@ export async function apisendQuestion(question: string) {
     presence_penalty: 0,
   });
 
-  console.log(completion.choices, { structuredData: true });
+  captureInfo("apiSendQuestion", { completion: completion.choices });
   const responseMessage = completion.choices[0].message;
 
   return {

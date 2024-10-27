@@ -16,6 +16,7 @@ import crypto from "crypto";
 import { apiVerifyRecaptcha } from "../api/apiVerifyRecaptcha";
 import { saveSession } from "../queries/saveSession";
 import { apiSendSuccessMail } from "../api/apiSendSuccessMail";
+import { captureInfo } from "taglog-nextjs-client";
 
 export class QuestionsController {
   db: FirebaseFirestore.Firestore;
@@ -24,6 +25,8 @@ export class QuestionsController {
   }
 
   async callGetResults(data: any): Promise<{ results: TScoreEntity } | null> {
+    captureInfo("call get results");
+
     try {
       if (!data.resultId) throw new Error("No id provided");
 
@@ -42,6 +45,8 @@ export class QuestionsController {
   }
 
   async callEvaluateAnswers(data: any): Promise<Boolean | never> {
+    captureInfo("call evaluate answers");
+
     const { answers, questions, config, user, recaptchaToken } =
       (await SCHEMA.evaluateAnswersSchema.validate(
         data
@@ -117,6 +122,7 @@ export class QuestionsController {
   async callGenerateQuestions(
     data: any
   ): Promise<TGetQuestionsResponse | TErrorResponse> {
+    captureInfo("call get questions");
     const { role, experienceLevel, questionsNum, recaptchaToken } =
       await SCHEMA.questionsQuerySchema.validate(data);
 
