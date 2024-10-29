@@ -108,13 +108,13 @@ export class QuestionsController {
     // @ts-ignore
     const result = await saveResults(this.db, score);
 
-    const HOSTNAME = process.env.HOSTNAME;
+    const TAGLOG_HOST = process.env.TAGLOG_HOST;
 
-    if (!HOSTNAME) {
-      throw new Error("HOSTNAME environment variable is not set.");
+    if (!TAGLOG_HOST) {
+      throw new Error("TAGLOG_HOST environment variable is not set.");
     }
 
-    const resultLink = `${HOSTNAME}/results/${result.resultId}`;
+    const resultLink = `${TAGLOG_HOST}/results/${result.resultId}`;
 
     return apiSendSuccessMail(resultLink, user);
   }
